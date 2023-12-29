@@ -17,6 +17,7 @@ if (scriptTag) shader = scriptTag.innerHTML;
 const uniforms = {
 	iTime: 0,
 	iResolution: [innerWidth, innerHeight],
+	speed: .25,
 };
 const shader2 = new Shader(Program.from(undefined, shader, "stars"));
 

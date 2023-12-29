@@ -1,13 +1,9 @@
 #define PI 3.14159
-#define teta = 1.256637
-#define cosTeta = 0.999759
-#define cosHalfTeta = .999940
-#define sinTeta = 0.021931
-#define sinHalfTeta = 0.010966
 #define starCount 4
 
 uniform float iTime;
 uniform vec2 iResolution;
+uniform float speed;
 
 // SDF function taken from https://www.shadertoy.com/view/4fs3zf
 float star(vec2 p, float radius, float inset)
@@ -38,7 +34,7 @@ float star(vec2 p, float radius, float inset)
 
 }
 
-float starPattern(vec2 p, float speed)
+float starPattern(vec2 p)
 {
 	float colSum = 0.;
 	float outerShape = 1. - smoothstep(-.01, -.001, star(p, 1., .6));
@@ -69,9 +65,8 @@ void main()
 	// Normalized pixel coordinates (from 0 to 1)
 	vec2 uv = gl_FragCoord.xy / iResolution.xy * 2.0 - 1.0;
 	uv.x *= iResolution.x/iResolution.y;
-	uv.y += .1;
+    uv.y += .15;
 	
-	float starCol = starPattern(uv, .25);
+	float starCol = starPattern(uv);
 	gl_FragColor = vec4(vec3(starCol) ,1.);
-    // gl_FragColor = vec4(vec3(star(vec2(0., 0.), 1., .6)), 0.);
-} 
+}
