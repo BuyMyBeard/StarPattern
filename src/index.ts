@@ -1,19 +1,42 @@
-import { Application, Sprite } from 'pixi.js'
+import { Application, Filter, Graphics, Program, Shader } from 'pixi.js'
 
 const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
-	backgroundColor: 0x6495ed,
-	width: 640,
-	height: 480
+	backgroundColor: 0x333333,
+	width: screen.availWidth,
+	height: screen.availHeight
 });
+let shader = "";
+const scriptTag = document.getElementById("shader");
+if (scriptTag) shader = scriptTag.innerHTML;
 
-const clampy: Sprite = Sprite.from("clampy.png");
 
-clampy.anchor.set(0.5);
+// console.log(shader);
+const uniforms = {
+	iTime: 0,
+	iResolution: [innerWidth, innerHeight],
+};
+const shader2 = new Shader(Program.from(undefined, shader, "stars"));
 
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
+const filter = new Filter(undefined, shader, uniforms);
 
-app.stage.addChild(clampy);
+app.stage.filterArea = app.renderer.screen;
+app.stage.filters = [filter];
+
+app.ticker.add((delta) => {
+	filter.uniforms.iTime += delta / 60;
+});
+//const starShader = new Shader(new Program(undefined, shader));
+// const mesh = new Mesh(new PlaneGeometry(), starShader);
+
+// app.stage.addChild(mesh);
+
+const graphics = new Graphics();
+graphics.beginFill("white");
+graphics.drawRect(0, 0, 500, 500);
+graphics.endFill();
+graphics.shader = shader2;
+
+app.stage.addChild(graphics);
