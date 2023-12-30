@@ -1,4 +1,4 @@
-import { ExtensionType, LoaderParser, LoaderParserPriority, checkDataUrl, checkExtension, extensions, settings } from 'pixi.js';
+import { ExtensionType, LoaderParser, LoaderParserPriority, checkExtension, settings } from 'pixi.js';
 
 const validGLSL1 = ".frag";
 const validGLSL2 = ".vert";
