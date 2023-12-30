@@ -14,8 +14,6 @@ export class Star extends Mesh<Shader>
             col2: color2.toRgbArray(),
         };
 
-        console.log(uniforms);
-
         const vert = Assets.get("StarPattern.frag");
         const frag = Assets.get("StarPattern.vert");
 
@@ -33,8 +31,5 @@ export class Star extends Mesh<Shader>
         super(quad, starShader);
         
         app.stage.addChild(this);
-        this.position.set(800, 500);
-        this.scale.set(300);
-        this.rotation = 10;
     }
 }
