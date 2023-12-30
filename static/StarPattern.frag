@@ -1,9 +1,13 @@
+precision mediump float;
+
 #define PI 3.14159
 #define starCount 4
 
 uniform float iTime;
 uniform vec2 iResolution;
 uniform float speed;
+uniform float offset;
+varying vec2 vUvs;
 
 // SDF function taken from https://www.shadertoy.com/view/4fs3zf
 float star(vec2 p, float radius, float inset)
@@ -37,36 +41,36 @@ float star(vec2 p, float radius, float inset)
 float starPattern(vec2 p)
 {
 	float colSum = 0.;
-	float outerShape = 1. - smoothstep(-.01, -.001, star(p, 1., .6));
+	float outerShape = 1. - smoothstep(-.008, -.001, star(p, 1., .6));
 	for (int i = 0; i < starCount * 2; i += 1)
 	{
 		float delta = float(i) - (2. * fract(iTime * speed) - 1.);
 		float radius = 1. - delta / float(starCount * 2);
-		float star = 1. - smoothstep(-.01, -.001, star(p, radius, .6));
+		float star = 1. - smoothstep(-.008, -.001, star(p, radius, .6));
 		
 		colSum = mod(float(i), 2.) == 0. ? colSum + star: colSum - star;
 	}
-	float innerStarDelta = 2. * fract(iTime * speed) - 1.;
+	float innerStarDelta = 2. * fract(iTime * speed + offset) - 1.;
 	float innerStarRadius = innerStarDelta / float(starCount * 2);
 	if (innerStarRadius > 0.)
 	{
-		float innerStar = 1. - smoothstep(-.01, -.001, star(p, innerStarRadius, .6));
+		float innerStar = 1. - smoothstep(-.008, -.001, star(p, innerStarRadius, .6));
 		colSum += innerStar;
 	}
-	
+
 	colSum *= outerShape;
-	
+
 	return colSum;
 }
 
 
 void main()
 {
-	// Normalized pixel coordinates (from 0 to 1)
-	vec2 uv = gl_FragCoord.xy / iResolution.xy * 2.0 - 1.0;
-	uv.x *= iResolution.x/iResolution.y;
-    uv.y += .15;
+	vec2 uv = vUvs * 2. - 1.;
+	uv.y *= -1.;
 	
 	float starCol = starPattern(uv);
-	gl_FragColor = vec4(vec3(starCol) ,1.);
+	float alpha = 1. - smoothstep(-.008, -.001, star(uv, 1., .6));
+	gl_FragColor = vec4(vec3(starCol) , alpha);
+	// gl_FragColor = vec4(uv, 0, 1);
 }

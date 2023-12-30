@@ -1,4 +1,4 @@
-import { Application, Assets, Filter, Graphics, Program, Shader, extensions } from 'pixi.js'
+import { Application, Assets, Filter, Geometry, Graphics, Mesh, Program, Quad, QuadUv, Rectangle, Shader, extensions } from 'pixi.js'
 import { loadGLSL } from './loadGLSL';
 
 const app = new Application({
@@ -11,37 +11,32 @@ const app = new Application({
 });
 // const scriptTag = document.getElementById("shader");
 // if (scriptTag) shader = scriptTag.innerHTML;
-
 extensions.add(loadGLSL);
 
-Assets.load("StarPattern.frag").then((shader) => {
+const vert = Assets.load("StarPattern.vert");
+const frag = Assets.load("StarPattern.frag");
+Promise.all([vert, frag]).then((values) => {
+
 	const uniforms = {
 		iTime: 0,
-		iResolution: [innerWidth, innerHeight],
 		speed: .25,
+		offset: 0,
 	};
-	const shader2 = new Shader(Program.from(undefined, shader, "stars"));
 	
-	const filter = new Filter(undefined, shader, uniforms);
-	
-	app.stage.filterArea = app.renderer.screen;
-	app.stage.filters = [filter];
+	const starShader = new Shader(new Program(values[0], values[1], "StarShader"), uniforms);
 	
 	app.ticker.add((delta) => {
-		filter.uniforms.iTime += delta / 60;
+		starShader.uniforms.iTime += delta / 60;
 	});
-	//const starShader = new Shader(new Program(undefined, shader));
-	// const mesh = new Mesh(new PlaneGeometry(), starShader);
 	
-	// app.stage.addChild(mesh);
-	
-	const graphics = new Graphics();
-	graphics.beginFill("white");
-	graphics.drawRect(0, 0, 500, 500);
-	graphics.endFill();
-	graphics.shader = shader2;
-	
-	app.stage.addChild(graphics);
+	const quad = new QuadUv();
 
+	const star = new Mesh(quad, starShader);
+
+
+	app.stage.addChild(star);
+	star.position.set(800, 500);
+	star.scale.set(300);
+	star.rotation = 10;
 });
 
