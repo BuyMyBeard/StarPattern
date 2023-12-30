@@ -4,7 +4,7 @@ import { Star } from './Star';
 const minScale = 200;
 const maxScale = 340;
 
-type StarBackgroundType = "Black" | "BlackAndGrey" | "Red";
+export type StarBackgroundType = "Black" | "BlackAndGrey" | "Red";
 
 function pickRandomly<T>(...elements : Array<T>) : T
 {

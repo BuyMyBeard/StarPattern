@@ -1,67 +1,122 @@
 import { Application, Assets, extensions, Text, TextStyle } from 'pixi.js'
 import { loadGLSL } from './loadGLSL';
-import { Generator } from './Generator';
+import { Generator, StarBackgroundType } from './Generator';
 
-const app = new Application({
-	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
-	resolution: window.devicePixelRatio || 1,
-	autoDensity: true,
-	backgroundColor: 0x333333,
-	width: window.innerWidth,
-	height: window.innerHeight,
-});
-// const scriptTag = document.getElementById("shader");
-// if (scriptTag) shader = scriptTag.innerHTML;
-
-const loadingString = "Currently loading";
-const loadingText = new Text(loadingString, new TextStyle({
-	fontSize: 72,
-	align: "center",
-	fill: "white",
-}));
-app.stage.addChild(loadingText);
-
-app.render();
-
-
-loadingText.anchor.set(.5, .5);
-loadingText.position.set(innerWidth / 2, innerHeight / 2);
-
+const canvas = document.getElementById("pixi-canvas") as HTMLCanvasElement;
 
 extensions.add(loadGLSL);
 const vert = Assets.load("StarPattern.vert");
 const frag = Assets.load("StarPattern.frag");
-Promise.all([vert, frag]).then(() => initialize());
+const promise = Promise.all([vert, frag]);
 
-function initialize()
+let optionAlreadySelected = false;
+let app : Application;
+
+const bt1 = document.getElementById("opt1");
+const bt2 = document.getElementById("opt2");
+const bt3 = document.getElementById("opt3");
+if (bt1)
 {
-	new Generator(app, 100, "Red");
-	app.stage.removeChild(loadingText);
+    bt1.onclick = () => 
+    {
+        if (optionAlreadySelected) return;
+        optionAlreadySelected = true;
+        renderLoading();
+        promise.then(() => initialize('BlackAndGrey'));
+    };
+} 
+if (bt2)
+{
+    bt2.onclick = () => 
+    {
+        if (optionAlreadySelected) return;
+        optionAlreadySelected = true;
+        renderLoading();
+        promise.then(() => initialize('Black'));
+    };
+} 
+if (bt3)
+{
+    bt3.onclick = () => 
+    {
+        if (optionAlreadySelected) return;
+        optionAlreadySelected = true;
+        renderLoading();
+        promise.then(() => initialize('Red'));
+    };
+} 
+
+let loadingText : Text;
+
+function renderLoading()
+{
+    const btns = document.getElementById("buttons");
+    const content = document.getElementById("pixi-content"); 
+    if (content) content.removeAttribute("style");
+    if (btns) btns.remove();
+
+    app = new Application({
+        view: canvas,
+        resolution: window.devicePixelRatio || 1,
+        autoDensity: true,
+        backgroundColor: 0x333333,
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+
+    const loadingString = "Currently loading";
+    loadingText = new Text(loadingString, new TextStyle({
+        fontSize: 72,
+        align: "center",
+        fill: "white",
+    }));
+    app.stage.addChild(loadingText);
+    
+    app.render();
+    
+    loadingText.anchor.set(.5, .5);
+    loadingText.position.set(innerWidth / 2, innerHeight / 2);
+}    
+
+
+function initialize(backgroundType : StarBackgroundType)
+{
+    setTimeout(() => 
+    {
+        new Generator(app, 100, backgroundType);
+        app.stage.removeChild(loadingText);
+        attachRecorder();
+    }, 200);
 }
 
-const canvas = document.getElementById("pixi-canvas") as HTMLCanvasElement;
-
-let recording = false;
-let mediaRecorder : MediaRecorder;
-let recordedChunks : BlobPart[];
-
-canvas.addEventListener("click", () => {
-  recording = !recording;
-    if(recording){
+function attachRecorder()
+{
+    const canvas = document.getElementById("pixi-canvas") as HTMLCanvasElement;
+    
+    let recording = false;
+    let mediaRecorder : MediaRecorder;
+    let recordedChunks : BlobPart[];
+    
+    canvas.addEventListener("click", () => 
+    {
+      recording = !recording;
+        if(recording)
+        {
             const stream = canvas.captureStream(25);
-            mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm;codecs=vp9',
-            });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9',});
             recordedChunks = [];
-            mediaRecorder.ondataavailable = e => {
-                if(e.data.size > 0){
+            mediaRecorder.ondataavailable = e => 
+            {
+                if(e.data.size > 0)
                     recordedChunks.push(e.data);
-                }
             };
             mediaRecorder.start();
-        } else {
+        }
+        else 
+        {
             mediaRecorder.stop();
-            setTimeout(() => {
+            setTimeout(() => 
+            {
                 const blob = new Blob(recordedChunks, {
                     type: "video/webm"
                 });
@@ -73,4 +128,6 @@ canvas.addEventListener("click", () => {
                 URL.revokeObjectURL(url);
             },0);
         }
-});
+    });
+}
+
