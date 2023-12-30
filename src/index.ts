@@ -1,5 +1,6 @@
-import { Application, Assets, Filter, Geometry, Graphics, Mesh, Program, Quad, QuadUv, Rectangle, Shader, extensions } from 'pixi.js'
+import { Application, Assets, Mesh, Program, QuadUv, Shader, extensions } from 'pixi.js'
 import { loadGLSL } from './loadGLSL';
+import { Star } from './Star';
 
 const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
@@ -15,28 +16,21 @@ extensions.add(loadGLSL);
 
 const vert = Assets.load("StarPattern.vert");
 const frag = Assets.load("StarPattern.frag");
-Promise.all([vert, frag]).then((values) => {
+Promise.all([vert, frag]).then(() => initialize())
 
-	const uniforms = {
-		iTime: 0,
-		speed: .25,
-		offset: 0,
-	};
-	
-	const starShader = new Shader(new Program(values[0], values[1], "StarShader"), uniforms);
-	
-	app.ticker.add((delta) => {
-		starShader.uniforms.iTime += delta / 60;
-	});
-	
-	const quad = new QuadUv();
+function generateStars(x : number, y : number, scale : number, rotation = 0)
+{
 
-	const star = new Mesh(quad, starShader);
+}
 
+function initialize()
+{
+	const star1 = new Star(app);
+	star1.position.set(500, 500)
+	star1.scale.set(1000)
+	star1.rotation = 20;
 
-	app.stage.addChild(star);
-	star.position.set(800, 500);
-	star.scale.set(300);
-	star.rotation = 10;
-});
-
+	const star2 = new Star(app);
+	star2.position.set(800, 300);
+	star2.scale.set(500);
+}

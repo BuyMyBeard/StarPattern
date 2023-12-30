@@ -7,6 +7,8 @@ uniform float iTime;
 uniform vec2 iResolution;
 uniform float speed;
 uniform float offset;
+uniform vec3 col1;
+uniform vec3 col2;
 varying vec2 vUvs;
 
 // SDF function taken from https://www.shadertoy.com/view/4fs3zf
@@ -70,7 +72,8 @@ void main()
 	uv.y *= -1.;
 	
 	float starCol = starPattern(uv);
+	//vec3 outputCol = mix(col1, col2, starCol);
 	float alpha = 1. - smoothstep(-.008, -.001, star(uv, 1., .6));
-	gl_FragColor = vec4(vec3(starCol) , alpha);
-	// gl_FragColor = vec4(uv, 0, 1);
+	//gl_FragColor = vec4(outputCol , alpha);
+	gl_FragColor = vec4(uv, 0., 1.);
 }
