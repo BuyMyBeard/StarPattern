@@ -2,7 +2,7 @@ import { Application } from 'pixi.js';
 import { Star } from './Star';
 
 const minScale = 200;
-const maxScale = 400;
+const maxScale = 340;
 
 type StarBackgroundType = "Black" | "BlackAndGrey" | "Red";
 
