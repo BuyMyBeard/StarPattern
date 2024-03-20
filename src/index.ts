@@ -83,7 +83,13 @@ function initialize(backgroundType : StarBackgroundType)
 {
     setTimeout(() => 
     {
-        new Generator(app, 100, backgroundType);
+        const fullHd = 1500000;
+        const phone = 300000;
+        const volume = window.innerWidth * window.innerHeight;
+        const scale = remap(volume, fullHd, phone, 1, .5);
+        const count = remap(volume, fullHd, phone, 120, 50);
+        
+        new Generator(app, count, backgroundType, scale);
         app.stage.removeChild(loadingText);
         attachRecorder();
     }, 200);
@@ -131,3 +137,6 @@ function attachRecorder()
     });
 }
 
+function remap(val : number, a : number, b: number, c : number, d : number ) : number {
+    return c + (d - c) * ((val - a) / (b - a));
+}

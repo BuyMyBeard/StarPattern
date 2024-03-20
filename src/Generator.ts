@@ -19,7 +19,7 @@ function randomRange(min : number, max : number)
 
 export class Generator
 {
-    constructor(app : Application, count : number, backgroundType : StarBackgroundType = "BlackAndGrey", materialVariantCount = 8)
+    constructor(app : Application, count : number, backgroundType : StarBackgroundType = "BlackAndGrey", globalScale = 1, materialVariantCount = 8)
     {
         const materials : StarMaterial[] = [];
         for (let i = 0; i < materialVariantCount; i++) {
@@ -48,7 +48,7 @@ export class Generator
             const x = Math.random() * window.innerWidth;
             const y = Math.random() * window.innerHeight;
             const rotation = Math.random() * 360;
-            const scale = randomRange(minScale, maxScale);
+            const scale = randomRange(minScale, maxScale) * globalScale;
 
             const material = pickRandomly(...materials);
             const star = new Star(app, material);
