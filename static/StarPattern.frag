@@ -5,7 +5,6 @@ precision mediump float;
 
 uniform float iTime;
 uniform float speed;
-uniform float offset;
 uniform vec3 col1;
 uniform vec3 col2;
 varying vec2 vUvs;
@@ -57,7 +56,7 @@ float starPattern(vec2 p)
 		
 		colSum = mod(float(i), 2.) == 0. ? colSum + star: colSum - star;
 	}
-	float innerStarDelta = 2. * fract(iTime * speed + offset) - 1.;
+	float innerStarDelta = 2. * fract(iTime * speed) - 1.;
 	float innerStarRadius = innerStarDelta / float(starCount * 2);
 	if (innerStarRadius > 0.)
 	{
