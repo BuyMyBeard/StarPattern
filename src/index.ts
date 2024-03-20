@@ -89,7 +89,7 @@ function initialize(backgroundType : StarBackgroundType)
         const scale = remap(volume, fullHd, phone, 1, .5);
         const count = remap(volume, fullHd, phone, 120, 50);
         
-        new Generator(app, count, backgroundType, scale);
+        new Generator(app, count, backgroundType, scale, 10);
         app.stage.removeChild(loadingText);
         attachRecorder();
     }, 200);
