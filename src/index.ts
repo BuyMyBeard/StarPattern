@@ -86,8 +86,8 @@ function initialize(backgroundType : StarBackgroundType)
         const fullHd = 1500000;
         const phone = 300000;
         const volume = window.innerWidth * window.innerHeight;
-        const scale = remap(volume, fullHd, phone, 1, .5);
-        const count = remap(volume, fullHd, phone, 120, 50);
+        const scale = remap(volume, fullHd, phone, 1, .75);
+        const count = remap(volume, fullHd, phone, 120, 60);
         
         new Generator(app, count, backgroundType, scale, 10);
         app.stage.removeChild(loadingText);
