@@ -31,7 +31,7 @@ export class Generator
                     break;
                     
                     case "BlackAndGrey":
-                    color1 = i < materialVariantCount / 2 ? "black" : "grey";
+                    color1 = i % 2 == 1 ?  "black" : "grey";
                     break;
 
                 case "Red":
